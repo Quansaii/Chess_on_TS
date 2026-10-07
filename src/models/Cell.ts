@@ -35,7 +35,67 @@ export class Cell{
     }
 
     public isEmptyVertical(targetCell:Cell): boolean{
-        return false
+        if(this.y < targetCell.y){
+            for(let i = this.y+1; i<= targetCell.y; i++){
+                if(!this.isEmpty(this.board.getCell(this.x, i))){
+                    return false;
+                }
+            }
+        }
+        else{
+            for(let i = this.y+1; i>= targetCell.y; i--){
+                if(!this.isEmpty(this.board.getCell(this.x, i))){
+                    return false;
+                }
+            }
+        }
+        return true
     }
-    
+
+    public isEmptyHorizontal(targetCell:Cell): boolean{
+        if(this.x < targetCell.x){
+            for(let i = this.x + 1; i<=targetCell.x; i++){
+               if(!this.isEmpty(this.board.getCell(i, this.y))){
+                    return false;
+            }
+        }
+        }
+        else{
+            for(let i = this.x + 1; i>=targetCell.x; i--){
+                if(!this.isEmpty(this.board.getCell(i, this.y))){
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public isEmptyDiagonal(targetCell:Cell): boolean{
+        if(this.x + this.y < targetCell.x + targetCell.y){
+            for(let i = this.x + 1; i<=targetCell.x; i++){
+                if(!this.isEmpty(this.board.getCell(i,i))){
+                    return false;
+                }
+            }
+        }
+        else{
+            for(let i = this.x + 1; i>=targetCell.x; i--){
+                if(!this.isEmpty(this.board.getCell(i,i))){
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+    public setFigure(figure:Figure):void{
+        this.cellFigure = figure;
+    }
+
+    public moveFigure(targetCell:Cell):void{
+        if(this.isEmpty(targetCell)){
+            this.board.getCell(targetCell.x, targetCell.y).cellFigure = this.cellFigure;
+        }
+    }
 }

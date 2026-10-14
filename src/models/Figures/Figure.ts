@@ -49,4 +49,5 @@ export abstract class Figure{
 
         return true;
     }
+
 }

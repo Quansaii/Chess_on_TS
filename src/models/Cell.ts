@@ -28,7 +28,10 @@ export class Cell{
     }
 
     public isEnemy(targetCell:Cell):boolean{
-        if(targetCell.cellFigure?.color !== this.cellFigure?.color){
+        if(this.cellFigure === null){
+            throw new Error("This cell has no Figure!");
+        }
+        if(targetCell.cellFigure?.color !== this.cellFigure?.color && !this.isEmpty(targetCell)){
             return true;
         }
         return false;
@@ -36,14 +39,14 @@ export class Cell{
 
     public isEmptyVertical(targetCell:Cell): boolean{
         if(this.y < targetCell.y){
-            for(let i = this.y+1; i<= targetCell.y; i++){
+            for(let i = this.y+1; i < targetCell.y; i++){
                 if(!this.isEmpty(this.board.getCell(this.x, i))){
                     return false;
                 }
             }
         }
         else{
-            for(let i = this.y+1; i>= targetCell.y; i--){
+            for(let i = this.y-1; i > targetCell.y; i--){
                 if(!this.isEmpty(this.board.getCell(this.x, i))){
                     return false;
                 }
@@ -54,14 +57,14 @@ export class Cell{
 
     public isEmptyHorizontal(targetCell:Cell): boolean{
         if(this.x < targetCell.x){
-            for(let i = this.x + 1; i<=targetCell.x; i++){
+            for(let i = this.x + 1; i<targetCell.x; i++){
                if(!this.isEmpty(this.board.getCell(i, this.y))){
                     return false;
+                }
             }
         }
-        }
         else{
-            for(let i = this.x + 1; i>=targetCell.x; i--){
+            for(let i = this.x - 1; i>targetCell.x; i--){
                 if(!this.isEmpty(this.board.getCell(i, this.y))){
                     return false;
                 }
@@ -72,30 +75,39 @@ export class Cell{
     }
 
     public isEmptyDiagonal(targetCell:Cell): boolean{
-        if(this.x + this.y < targetCell.x + targetCell.y){
-            for(let i = this.x + 1; i<=targetCell.x; i++){
-                if(!this.isEmpty(this.board.getCell(i,i))){
-                    return false;
-                }
-            }
+        const absX = Math.abs(targetCell.x - this.x);
+        const absY = Math.abs(targetCell.y - this.y);
+        if(absX !== absY || absX === 0){
+            return false;
         }
-        else{
-            for(let i = this.x + 1; i>=targetCell.x; i--){
-                if(!this.isEmpty(this.board.getCell(i,i))){
-                    return false;
-                }
+
+        const dx = targetCell.x > this.x ? 1 : -1;
+        const dy = targetCell.y > this.y ? 1 : -1;
+
+        for(let k = 1; k < absX; k++){
+            if(!this.isEmpty(this.board.getCell(this.x + k*dx, this.y + k*dy))){
+                return false;
             }
         }
 
         return true;
     }
+    
     public setFigure(figure:Figure):void{
         this.cellFigure = figure;
     }
 
     public moveFigure(targetCell:Cell):void{
-        if(this.isEmpty(targetCell)){
-            this.board.getCell(targetCell.x, targetCell.y).cellFigure = this.cellFigure;
+        const figure = this.cellFigure;
+        if(!figure){
+            return;
+        }
+        if(this.isEmpty(targetCell) || this.isEnemy(targetCell)){
+            const target = this.board.getCell(targetCell.x, targetCell.y);
+            target.cellFigure = figure;
+            this.cellFigure = null;
+            figure.cell = target;
+            figure.isMoved = true;
         }
     }
 }

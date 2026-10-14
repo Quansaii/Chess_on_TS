@@ -1,6 +1,6 @@
 import { Cell } from "./Cell";
 import type { figureColor } from "./Colors";
-import { figureName, figurePoints, type Figure } from "./Figures/Figure";
+import type { Figure } from "./Figures/Figure";
 import { Pawn } from "./Figures/Pawn";
 import { Rook } from "./Figures/Rook";
 import { Knight } from "./Figures/Knight";

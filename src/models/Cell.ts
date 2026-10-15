@@ -97,17 +97,4 @@ export class Cell{
         this.cellFigure = figure;
     }
 
-    public moveFigure(targetCell:Cell):void{
-        const figure = this.cellFigure;
-        if(!figure){
-            return;
-        }
-        if(this.isEmpty(targetCell) || this.isEnemy(targetCell)){
-            const target = this.board.getCell(targetCell.x, targetCell.y);
-            target.cellFigure = figure;
-            this.cellFigure = null;
-            figure.cell = target;
-            figure.isMoved = true;
-        }
-    }
 }

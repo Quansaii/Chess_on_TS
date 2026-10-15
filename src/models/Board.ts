@@ -102,4 +102,30 @@ export class Board{
         this.countFiguresId++;
     }
 
+    public moveFigure(from:Cell, to:Cell):void{
+        const figure = from.cellFigure;
+        if(!figure){
+            return;
+        }
+        if(figure.color !== this.whoMoves){
+            return
+        }
+        if(!figure.canMove(to)){
+            return;
+        }
+
+        if(to.cellFigure !== null){
+            to.cellFigure.color === 'white' ? 
+                this.lostWhiteFigures.push(to.cellFigure) : this.lostBlackFigures.push(to.cellFigure);
+        }
+
+        to.cellFigure = figure;
+        from.cellFigure = null;
+        figure.cell = to;
+        figure.isMoved = true;
+        this.whoMoves === 'white' ?
+            this.whoMoves = 'black' : this.whoMoves = 'white';
+        this.selectedCell = null;
+    }
+
 }

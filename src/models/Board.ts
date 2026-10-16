@@ -126,6 +126,50 @@ export class Board{
         this.whoMoves === 'white' ?
             this.whoMoves = 'black' : this.whoMoves = 'white';
         this.selectedCell = null;
+
+        this.updateAvailableCells();
+    }
+
+    public selectCell(cell:Cell):void{
+
+        if(this.selectedCell === cell){
+            this.selectedCell = null;
+            return;
+        }
+        
+        if(!cell.cellFigure || cell.cellFigure.color !== this.whoMoves){
+            this.selectedCell = null;
+            return;
+        }
+        
+        this.selectedCell = cell;
+        this.updateAvailableCells();
+    }
+
+    public updateAvailableCells():void{
+        this.cells.forEach((row) => {
+            row.forEach((column) => {
+                column.isAvailable = false;
+            })
+        });
+
+        if(this.selectedCell === null){
+            return;
+        }
+
+        const figure = this.selectedCell.cellFigure;
+
+        if(!figure){
+            return;
+        }
+
+        this.cells.forEach((row) => {
+            row.forEach((column) => {
+                if(figure.canMove(column)){
+                    column.isAvailable = true;
+                }
+            })
+        })
     }
 
 }

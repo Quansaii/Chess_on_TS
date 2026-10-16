@@ -1,0 +1,54 @@
+.board {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  margin: 2rem auto;
+  border: 2px solid #3b2a1a;
+}
+
+.row {
+  display: flex;
+}
+
+.cell {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.cell.brown {
+  background-color: #b58863;
+}
+
+.cell.beige {
+  background-color: #f0d9b5;
+}
+
+.cell img {
+  width: 80%;
+  height: 80%;
+  pointer-events: none;
+}
+
+/* Точка на клетках, куда можно пойти */
+.cell.available::after {
+  content: "";
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+}
+
+@media (max-width: 600px) {
+  .cell {
+    width: 40px;
+    height: 40px;
+  }
+}

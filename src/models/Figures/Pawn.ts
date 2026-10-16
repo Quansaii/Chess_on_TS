@@ -8,7 +8,7 @@ export class Pawn extends Figure{
     img = this.color == "white" ? images.whitePawn : images.blackPawn;
 
     public canMove(targetCell:Cell):boolean{
-        const dir = this.color === "white" ? 1 : -1;
+        const dir = this.color === "white" ? -1 : 1;
         const dx = targetCell.x - this.cell.x;
         const dy = targetCell.y - this.cell.y;
 

@@ -29,7 +29,7 @@ export class Board{
             const row: Cell[] = []
             for(let j = 0; j<8; j++){
                 count++;
-                const color = (i+j)%2 === 0 ? 'brown':'beige';
+                const color = (i+j)%2 === 0 ? 'beige':'brown';
                 row.push(new Cell(i,j,color, count, this))
             }
             this.cells.push(row)
@@ -46,58 +46,58 @@ export class Board{
 
     public addFigures():void{
         for(let i = 0; i<8; i++){
-            const whitePawnCell = this.getCell(1,i);
+            const whitePawnCell = this.getCell(6,i);
             whitePawnCell.setFigure(new Pawn(this.countFiguresId, 'white', whitePawnCell));
             this.countFiguresId++;
 
-            const blackPawnCell = this.getCell(6,i);
+            const blackPawnCell = this.getCell(1,i);
             blackPawnCell.setFigure(new Pawn(this.countFiguresId, 'black', blackPawnCell));
             this.countFiguresId++;
         }
 
         for(const i of [0, 7]){
-            const whiteRookCell = this.getCell(0,i);
+            const whiteRookCell = this.getCell(7,i);
             whiteRookCell.setFigure(new Rook(this.countFiguresId, 'white', whiteRookCell));
             this.countFiguresId++;
 
-            const blackRookCell = this.getCell(7,i);
+            const blackRookCell = this.getCell(0,i);
             blackRookCell.setFigure(new Rook(this.countFiguresId, 'black', blackRookCell));
             this.countFiguresId++;
         }
 
         for(const i of [1, 6]){
-            const whiteKnightCell = this.getCell(0,i);
+            const whiteKnightCell = this.getCell(7,i);
             whiteKnightCell.setFigure(new Knight(this.countFiguresId, 'white', whiteKnightCell));
             this.countFiguresId++;
 
-            const blackKnightCell = this.getCell(7,i);
+            const blackKnightCell = this.getCell(0,i);
             blackKnightCell.setFigure(new Knight(this.countFiguresId, 'black', blackKnightCell));
             this.countFiguresId++;
         }
 
         for(const i of [2, 5]){
-            const whiteBishopCell = this.getCell(0,i);
+            const whiteBishopCell = this.getCell(7,i);
             whiteBishopCell.setFigure(new Bishop(this.countFiguresId, 'white', whiteBishopCell));
             this.countFiguresId++;
 
-            const blackBishopCell = this.getCell(7,i);
+            const blackBishopCell = this.getCell(0,i);
             blackBishopCell.setFigure(new Bishop(this.countFiguresId, 'black', blackBishopCell));
             this.countFiguresId++;
         }
 
-        const whiteQueenCell = this.getCell(0,3);
+        const whiteQueenCell = this.getCell(7,3);
         whiteQueenCell.setFigure(new Queen(this.countFiguresId, 'white', whiteQueenCell));
         this.countFiguresId++;
 
-        const blackQueenCell = this.getCell(7,3);
+        const blackQueenCell = this.getCell(0,3);
         blackQueenCell.setFigure(new Queen(this.countFiguresId, 'black', blackQueenCell));
         this.countFiguresId++;
 
-        const whiteKingCell = this.getCell(0,4);
+        const whiteKingCell = this.getCell(7,4);
         whiteKingCell.setFigure(new King(this.countFiguresId, 'white', whiteKingCell));
         this.countFiguresId++;
 
-        const blackKingCell = this.getCell(7,4);
+        const blackKingCell = this.getCell(0,4);
         blackKingCell.setFigure(new King(this.countFiguresId, 'black', blackKingCell));
         this.countFiguresId++;
     }

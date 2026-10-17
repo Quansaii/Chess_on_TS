@@ -14,6 +14,7 @@ export class Board{
     lostBlackFigures:Figure[] = [];
     lostWhiteFigures:Figure[] = [];
     selectedCell: Cell | null = null;
+    pawnCell: Cell | null =null;
     whoMoves: figureColor = "white";
 
     countFiguresId:number = 0;
@@ -103,6 +104,11 @@ export class Board{
     }
 
     public moveFigure(from:Cell, to:Cell):void{
+
+        if(this.pawnCell !== null){
+            return;
+        }
+        
         const figure = from.cellFigure;
         if(!figure){
             return;
@@ -123,14 +129,25 @@ export class Board{
         from.cellFigure = null;
         figure.cell = to;
         figure.isMoved = true;
-        this.whoMoves === 'white' ?
-            this.whoMoves = 'black' : this.whoMoves = 'white';
-        this.selectedCell = null;
 
+        if(figure.name === "PAWN"){
+            if(figure.color === 'white' && to.x === 0 || figure.color === 'black' && to.x === 7){
+                this.pawnCell = to;
+                this.selectedCell = null;
+                this.updateAvailableCells();
+                return;
+            }
+        }
+        
+        this.endTurn();
         this.updateAvailableCells();
     }
 
     public selectCell(cell:Cell):void{
+
+        if(this.pawnCell !== null){
+            return;
+        }
 
         if(this.selectedCell === cell){
             this.selectedCell = null;
@@ -172,4 +189,43 @@ export class Board{
         })
     }
 
+    public endTurn():void{
+        this.whoMoves === 'white' ?
+            this.whoMoves = 'black' : this.whoMoves = 'white';
+        this.selectedCell = null;
+    }
+
+    public promotePawn(type:"QUEEN" | "ROOK" | "BISHOP" | "KNIGHT"):void{
+        const cell = this.pawnCell;
+        if(cell === null){
+            return;
+        }
+
+        const pawn = cell.cellFigure;
+        if(!pawn){
+            return;
+        }
+
+        let newFigure: Figure;
+        switch(type){
+            case "QUEEN":
+                newFigure = new Queen(pawn.id, pawn.color, cell);
+                break;
+            case "ROOK":
+                newFigure = new Rook(pawn.id, pawn.color, cell);
+                break;
+            case "BISHOP":
+                newFigure = new Bishop(pawn.id, pawn.color, cell);
+                break;
+            case "KNIGHT":
+                newFigure = new Knight(pawn.id, pawn.color, cell);
+                break;
+        }
+
+        cell.cellFigure = newFigure;
+        newFigure.isMoved = true;
+        this.pawnCell = null;
+        this.endTurn();
+        this.updateAvailableCells();
+    }
 }

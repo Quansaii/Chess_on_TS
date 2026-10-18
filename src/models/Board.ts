@@ -1,6 +1,6 @@
 import { Cell } from "./Cell";
 import type { figureColor } from "./Colors";
-import type { Figure } from "./Figures/Figure";
+import { figureName, type Figure } from "./Figures/Figure";
 import { Pawn } from "./Figures/Pawn";
 import { Rook } from "./Figures/Rook";
 import { Knight } from "./Figures/Knight";
@@ -14,8 +14,9 @@ export class Board{
     lostBlackFigures:Figure[] = [];
     lostWhiteFigures:Figure[] = [];
     selectedCell: Cell | null = null;
-    pawnCell: Cell | null =null;
+    pawnCell: Cell | null = null;
     whoMoves: figureColor = "white";
+    enPassantTarget: Cell | null = null;
 
     countFiguresId:number = 0;
 
@@ -108,21 +109,24 @@ export class Board{
         if(this.pawnCell !== null){
             return;
         }
-        
+
         const figure = from.cellFigure;
         if(!figure){
             return;
         }
         if(figure.color !== this.whoMoves){
-            return
+            return;
         }
         if(!figure.canMove(to)){
             return;
         }
 
         if(to.cellFigure !== null){
-            to.cellFigure.color === 'white' ? 
-                this.lostWhiteFigures.push(to.cellFigure) : this.lostBlackFigures.push(to.cellFigure);
+            this.addLostFigure(to.cellFigure);
+        }
+
+        if(this.isEnPassantCapture(figure, from, to)){
+            this.captureEnPassant(from, to);
         }
 
         to.cellFigure = figure;
@@ -130,7 +134,14 @@ export class Board{
         figure.cell = to;
         figure.isMoved = true;
 
-        if(figure.name === "PAWN"){
+        if(figure.name === figureName.PAWN && Math.abs(to.x - from.x) === 2){
+            this.enPassantTarget = this.getCell((from.x + to.x)/2, to.y);
+        }
+        else{
+            this.enPassantTarget = null;
+        }
+
+        if(figure.name === figureName.PAWN){
             if(figure.color === 'white' && to.x === 0 || figure.color === 'black' && to.x === 7){
                 this.pawnCell = to;
                 this.selectedCell = null;
@@ -138,9 +149,31 @@ export class Board{
                 return;
             }
         }
-        
+
         this.endTurn();
         this.updateAvailableCells();
+    }
+
+    private addLostFigure(figure:Figure):void{
+        if(figure.color === "white"){
+            this.lostWhiteFigures.push(figure);
+        } else {
+            this.lostBlackFigures.push(figure);
+        }
+    }
+
+    private isEnPassantCapture(figure:Figure, from:Cell, to:Cell):boolean{
+        return figure.name === figureName.PAWN
+            && to === this.enPassantTarget
+            && from.y !== to.y;
+    }
+
+    private captureEnPassant(from:Cell, to:Cell):void{
+        const passedCell = this.getCell(from.x, to.y);
+        if(passedCell.cellFigure){
+            this.addLostFigure(passedCell.cellFigure);
+            passedCell.cellFigure = null;
+        }
     }
 
     public selectCell(cell:Cell):void{
@@ -153,12 +186,12 @@ export class Board{
             this.selectedCell = null;
             return;
         }
-        
+
         if(!cell.cellFigure || cell.cellFigure.color !== this.whoMoves){
             this.selectedCell = null;
             return;
         }
-        
+
         this.selectedCell = cell;
         this.updateAvailableCells();
     }

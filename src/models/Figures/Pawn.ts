@@ -22,9 +22,25 @@ export class Pawn extends Figure{
         }
 
         if(Math.abs(dy) === 1 && dx === dir){
-            return this.cell.isEnemy(targetCell) && super.canMove(targetCell);
+            return this.isCapture(targetCell) || this.isEnPassant(targetCell);
         }
 
         return false;
+    }
+
+    private isCapture(targetCell:Cell):boolean{
+        return this.cell.isEnemy(targetCell) && super.canMove(targetCell);
+    }
+
+    private isEnPassant(targetCell:Cell):boolean{
+        const board = this.cell.board;
+        if(targetCell !== board.enPassantTarget || !this.cell.isEmpty(targetCell)){
+            return false;
+        }
+
+        const passedPawn = board.getCell(this.cell.x, targetCell.y).cellFigure;
+        return passedPawn !== null
+            && passedPawn.name === figureName.PAWN
+            && passedPawn.color !== this.color;
     }
 }

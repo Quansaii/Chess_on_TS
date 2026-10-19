@@ -1,8 +1,31 @@
+.game {
+  width: fit-content;
+  margin: 2rem auto;
+  font-family: system-ui, sans-serif;
+}
+
+.player {
+  padding: 0.4rem 0.9rem;
+  font-weight: 600;
+  color: #d8d2c8;
+  opacity: 0.55;
+  background-color: #2b2a27;
+}
+
+.player.active {
+  opacity: 1;
+  color: #ffffff;
+  background-color: #4a4742;
+}
+
+.board-container {
+  position: relative;
+}
+
 .board {
   display: flex;
   flex-direction: column;
   width: fit-content;
-  margin: 2rem auto;
   border: 2px solid #3b2a1a;
 }
 
@@ -43,6 +66,47 @@
   border-radius: 50%;
   background-color: rgba(0, 0, 0, 0.25);
   pointer-events: none;
+}
+
+/* Король под шахом: красное свечение, как на chess.com */
+.cell.in-check {
+  background-image: radial-gradient(circle, #ff4d4d 0%, #e02424 35%, rgba(224, 36, 36, 0) 75%);
+}
+
+/* Мат: свечение сильнее */
+.cell.checkmate {
+  background-image: radial-gradient(circle, #ff2a2a 0%, #c00000 45%, rgba(192, 0, 0, 0) 80%);
+}
+
+.result-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.45);
+}
+
+.result-box {
+  padding: 1.5rem 2rem;
+  text-align: center;
+  color: #3b2a1a;
+  background-color: #f0d9b5;
+  border: 2px solid #3b2a1a;
+}
+
+.result-box h2 {
+  margin: 0 0 0.5rem;
+}
+
+.result-box p {
+  margin: 0 0 1rem;
+}
+
+.result-box button {
+  padding: 0.5rem 1.25rem;
+  font-size: 1rem;
+  cursor: pointer;
 }
 
 .promotion {

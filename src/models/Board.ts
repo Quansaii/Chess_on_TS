@@ -17,6 +17,7 @@ export class Board{
     pawnCell: Cell | null = null;
     whoMoves: figureColor = "white";
     enPassantTarget: Cell | null = null;
+    gameStatus: "playing" | "checkmate" | "stalemate" = "playing";
 
     countFiguresId:number = 0;
 
@@ -106,7 +107,7 @@ export class Board{
 
     public moveFigure(from:Cell, to:Cell):void{
 
-        if(this.pawnCell !== null){
+        if(this.pawnCell !== null || this.gameStatus !== "playing"){
             return;
         }
 
@@ -117,7 +118,7 @@ export class Board{
         if(figure.color !== this.whoMoves){
             return;
         }
-        if(!figure.canMove(to)){
+        if(!this.isMoveLegal(from, to)){
             return;
         }
 
@@ -167,7 +168,7 @@ export class Board{
             && to === this.enPassantTarget
             && from.y !== to.y;
     }
-
+    
     private captureEnPassant(from:Cell, to:Cell):void{
         const passedCell = this.getCell(from.x, to.y);
         if(passedCell.cellFigure){
@@ -178,7 +179,7 @@ export class Board{
 
     public selectCell(cell:Cell):void{
 
-        if(this.pawnCell !== null){
+        if(this.pawnCell !== null || this.gameStatus !== "playing"){
             return;
         }
 
@@ -212,10 +213,12 @@ export class Board{
         if(!figure){
             return;
         }
+        
+        const from = this.selectedCell;
 
         this.cells.forEach((row) => {
             row.forEach((column) => {
-                if(figure.canMove(column)){
+                if(this.isMoveLegal(from, column)){
                     column.isAvailable = true;
                 }
             })
@@ -226,6 +229,7 @@ export class Board{
         this.whoMoves === 'white' ?
             this.whoMoves = 'black' : this.whoMoves = 'white';
         this.selectedCell = null;
+        this.updateGameStatus();
     }
 
     public promotePawn(type:"QUEEN" | "ROOK" | "BISHOP" | "KNIGHT"):void{
@@ -286,12 +290,61 @@ export class Board{
     }
 
     public isMoveLegal(from:Cell, to:Cell):boolean{
-        if(from.cellFigure === null){
+        const currentFigure = from.cellFigure;
+        if(currentFigure === null){
             return false;
         }
-        if(!from.cellFigure.canMove(to)){
+        if(!currentFigure.canMove(to)){
             return false;
         }
+
+        const isEnPassant = this.isEnPassantCapture(currentFigure, from, to);
+        const passedCell = this.getCell(from.x, to.y);
+        const passedFigure = passedCell.cellFigure;
+
+        const capturedFigure = to.cellFigure;
+        const wasMoved = currentFigure.isMoved;
+
+        if(isEnPassant){
+            passedCell.cellFigure = null;
+        }
+
+        to.cellFigure = currentFigure;
+        from.cellFigure = null;
+        currentFigure.cell = to;
         
+        const inCheck = this.isInCheck(currentFigure.color);
+        
+        from.cellFigure = currentFigure;
+        to.cellFigure = capturedFigure;
+        currentFigure.cell = from;
+        currentFigure.isMoved = wasMoved;
+
+        if(isEnPassant){
+            passedCell.cellFigure = passedFigure;
+        }
+
+        return !inCheck;
+    }
+
+    public hasLegalMoves(color:figureColor):boolean{
+        const allCells = this.cells.flat();
+        return allCells.some((from) => {
+            if(from.cellFigure === null || from.cellFigure.color !== color){
+                return false;
+            }
+            return allCells.some((to) => this.isMoveLegal(from, to));
+        });
+    }
+
+    private updateGameStatus():void{
+        const side = this.whoMoves;
+        if(this.hasLegalMoves(side)){
+            this.gameStatus = "playing";
+        } else if(this.isInCheck(side)){
+            this.gameStatus = "checkmate";
+        } else {
+            this.gameStatus = "stalemate";
+        }
     }
 }

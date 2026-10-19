@@ -263,9 +263,35 @@ export class Board{
     }
 
     public isSquareAttacked(target:Cell, byColor:figureColor):boolean{
-    return this.cells.flat().some((cell) => {
-        const figure = cell.cellFigure;
-        return figure !== null && figure.color === byColor && figure.attacks(target);
-    });
-}
+        return this.cells.flat().some((cell) => {
+            const figure = cell.cellFigure;
+            return figure !== null && figure.color === byColor && figure.attacks(target);
+        });
+    }
+
+    public findKing(color:figureColor):Cell | null{
+        const kingCell = this.cells.flat().find((cell) => {
+            return cell.cellFigure?.name === figureName.KING && cell.cellFigure.color === color;
+        });
+        return kingCell ?? null;
+    }
+
+    public isInCheck(color:figureColor):boolean{
+        const kingCell = this.findKing(color);
+        if(kingCell === null){
+            return false;
+        }
+        const enemyColor = color === 'white' ? 'black' : 'white';
+        return this.isSquareAttacked(kingCell, enemyColor);
+    }
+
+    public isMoveLegal(from:Cell, to:Cell):boolean{
+        if(from.cellFigure === null){
+            return false;
+        }
+        if(!from.cellFigure.canMove(to)){
+            return false;
+        }
+        
+    }
 }

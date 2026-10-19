@@ -28,4 +28,31 @@ export class Queen extends Figure{
 
         return super.canMove(targetCell);
     }
+
+    public attacks(targetCell:Cell):boolean{
+        const dx = targetCell.x - this.cell.x;
+        const dy = targetCell.y - this.cell.y;
+
+        if(targetCell === this.cell){
+            return false;
+        }
+
+        const isStraight = dx === 0 || dy === 0;
+        const isDiagonal = Math.abs(dx) === Math.abs(dy);
+        if(!isStraight && !isDiagonal){
+            return false;
+        }
+
+        if(dx === 0 && this.cell.isEmptyVertical(targetCell)){
+            return true;
+        }
+        if(dy === 0 && this.cell.isEmptyHorizontal(targetCell)){
+            return true;
+        }
+        if(isDiagonal && this.cell.isEmptyDiagonal(targetCell)){
+            return true;
+        }
+
+        return super.attacks(targetCell);
+    }
 }

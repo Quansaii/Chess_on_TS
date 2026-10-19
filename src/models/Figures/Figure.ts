@@ -49,5 +49,7 @@ export abstract class Figure{
 
         return true;
     }
-
+    public attacks(_targetCell:Cell):boolean{
+        return false;
+    }
 }

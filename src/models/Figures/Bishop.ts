@@ -22,4 +22,19 @@ export class Bishop extends Figure{
 
         return super.canMove(targetCell);
     }
+
+    public attacks(targetCell:Cell):boolean{
+        const dx = Math.abs(targetCell.x - this.cell.x);
+        const dy = Math.abs(targetCell.y - this.cell.y);
+        
+        if(dx !== dy){
+            return false;
+        }
+
+        if(this.cell.isEmptyDiagonal(targetCell)){
+            return true;
+        }
+
+        return super.attacks(targetCell);
+    }
 }

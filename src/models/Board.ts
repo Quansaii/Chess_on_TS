@@ -261,4 +261,11 @@ export class Board{
         this.endTurn();
         this.updateAvailableCells();
     }
+
+    public isSquareAttacked(target:Cell, byColor:figureColor):boolean{
+    return this.cells.flat().some((cell) => {
+        const figure = cell.cellFigure;
+        return figure !== null && figure.color === byColor && figure.attacks(target);
+    });
+}
 }

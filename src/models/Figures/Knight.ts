@@ -17,4 +17,15 @@ export class Knight extends Figure{
 
         return super.canMove(targetCell);
     }
+
+    public attacks(targetCell:Cell):boolean{
+        const dx = Math.abs(targetCell.x - this.cell.x);
+        const dy = Math.abs(targetCell.y - this.cell.y);
+
+        if(((dx === 1 && dy === 2) || (dx === 2 && dy === 1))){
+            return true;
+        }
+
+        return super.attacks(targetCell);
+    }
 }

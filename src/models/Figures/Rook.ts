@@ -26,4 +26,19 @@ export class Rook extends Figure{
 
         return super.canMove(targetCell);
     }
+
+    public attacks(targetCell:Cell):boolean{
+        const dx = targetCell.x - this.cell.x;
+        const dy = targetCell.y - this.cell.y;
+
+        if(targetCell === this.cell){
+            return false;
+        }
+
+        if((dx === 0 && this.cell.isEmptyVertical(targetCell)) || (this.cell.isEmptyHorizontal(targetCell) && dy === 0)){
+            return true;
+        }
+
+        return super.attacks(targetCell);
+    }
 }

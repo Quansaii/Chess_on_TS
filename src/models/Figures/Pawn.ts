@@ -43,4 +43,16 @@ export class Pawn extends Figure{
             && passedPawn.name === figureName.PAWN
             && passedPawn.color !== this.color;
     }
+
+    public attacks(targetCell:Cell):boolean{
+        const dir = this.color === 'white' ? -1:1;
+        const dx = targetCell.x - this.cell.x;
+        const dy = targetCell.y - this.cell.y;
+
+        if(dx === dir && Math.abs(dy) === 1){
+            return true;
+        }
+
+        return super.attacks(targetCell);
+    }
 }

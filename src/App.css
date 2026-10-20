@@ -151,6 +151,27 @@
   pointer-events: none;
 }
 
+.player-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.captured-list {
+  display: flex;
+  gap: 2px;
+  min-height: 28px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background-color: #f0d9b5;
+}
+
+.captured {
+  width: 24px;
+  height: 24px;
+  filter: drop-shadow(0 0 1px #ffffff) drop-shadow(0 0 1px #ffffff);
+}
+
 @media (max-width: 600px) {
   .cell {
     width: 40px;

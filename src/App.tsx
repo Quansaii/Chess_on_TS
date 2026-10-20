@@ -3,6 +3,7 @@ import {useState} from 'react';
 import { Board } from './models/Board';
 import type { Cell } from './models/Cell';
 import * as images from './assets/index';
+import type { Figure } from './models/Figures/Figure';
 
 const promotionOptions = [
   { type: "QUEEN", label: "Ферзь", white: images.whiteQueen, black: images.blackQueen },
@@ -45,6 +46,14 @@ function App() {
     setChessBoard(createBoard());
   }
 
+  function lostFiguresImages(figures:Figure[]){
+    return figures.map((figure) =>{
+      return (
+        <img className='captured' src={figure.img} alt={figure.name} key={figure.id}/>
+      )
+    })
+  }
+
   const promotionCell = chessBoard.pawnCell;
   const side = chessBoard.whoMoves;
   const isGameOver = chessBoard.gameStatus !== "playing";
@@ -77,8 +86,11 @@ function App() {
     )}
 
     <div className="game">
-      <div className={`player ${!isGameOver && side === "black" ? "active" : ""}`}>Чёрные</div>
-
+      <div className="player-row">
+        <div className={`player ${!isGameOver && side === "black" ? "active" : ""}`}>Чёрные</div>
+        <div className="captured-list">{lostFiguresImages(chessBoard.lostWhiteFigures)}</div>
+      </div>
+      
       <div className="board-container">
         <div className="board">
           {chessBoard.cells.map((row, rowIndex) => (
@@ -119,7 +131,10 @@ function App() {
         )}
       </div>
 
-      <div className={`player ${!isGameOver && side === "white" ? "active" : ""}`}>Белые</div>
+      <div className="player-row">
+        <div className={`player ${!isGameOver && side === "white" ? "active" : ""}`}>Белые</div>
+        <div className="captured-list">{lostFiguresImages(chessBoard.lostBlackFigures)}</div>
+      </div>
     </div>
     </>
   )

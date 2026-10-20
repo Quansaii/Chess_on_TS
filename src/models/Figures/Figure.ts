@@ -49,6 +49,8 @@ export abstract class Figure{
 
         return true;
     }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public attacks(_targetCell:Cell):boolean{
         return false;
     }

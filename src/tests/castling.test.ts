@@ -1,11 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { Board } from "./Board";
-import type { Cell } from "./Cell";
-import type { figureColor } from "./Colors";
-import type { Figure } from "./Figures/Figure";
-import { King } from "./Figures/King";
-import { Rook } from "./Figures/Rook";
-import { Bishop } from "./Figures/Bishop";
+import { Board } from "../models/Board";
+import type { Cell } from "../models/Cell";
+import type { figureColor } from "../models/Colors";
+import type { Figure } from "../models/Figures/Figure";
+import { King } from "../models/Figures/King";
+import { Rook } from "../models/Figures/Rook";
+import { Bishop } from "../models/Figures/Bishop";
 
 type FigureCtor = new (id:number, color:figureColor, cell:Cell) => Figure;
 

@@ -12,6 +12,10 @@ export class King extends Figure{
         const dx = Math.abs(targetCell.x - this.cell.x);
         const dy = Math.abs(targetCell.y - this.cell.y);
 
+        if(dx === 0 && dy === 2){
+            return this.cell.board.canCastle(this.cell, targetCell);
+        }
+
         if(dx > 1 || dy > 1){
             return false;
         }

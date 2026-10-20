@@ -130,6 +130,20 @@ export class Board{
             this.captureEnPassant(from, to);
         }
 
+        if(figure.name === figureName.KING && Math.abs(to.y - from.y) === 2){
+            const rookCurrentCell = this.getCell(from.x, to.y === 6 ? 7:0);
+            const rookCastledCell = this.getCell(from.x, to.y === 6 ? 5:3);
+            const rook = rookCurrentCell.cellFigure;
+
+            if(rook === null){
+                throw new Error("No rook available!");
+            }
+            rookCastledCell.cellFigure = rook;
+            rookCurrentCell.cellFigure = null;
+            rook.cell = rookCastledCell;
+            rook.isMoved = true;
+        }
+
         to.cellFigure = figure;
         from.cellFigure = null;
         figure.cell = to;
@@ -226,8 +240,11 @@ export class Board{
     }
 
     public endTurn():void{
-        this.whoMoves === 'white' ?
-            this.whoMoves = 'black' : this.whoMoves = 'white';
+        if(this.whoMoves === 'white'){
+            this.whoMoves = 'black';
+        } else {
+            this.whoMoves = 'white';
+        }
         this.selectedCell = null;
         this.updateGameStatus();
     }
@@ -326,6 +343,47 @@ export class Board{
 
         return !inCheck;
     }
+
+    public canCastle(from:Cell, to:Cell):boolean{
+        if(from.x !== to.x || Math.abs(to.y - from.y) !== 2){
+            return false;
+        }
+
+        const king = from.cellFigure;
+        if(king === null || king.name !== figureName.KING || king.isMoved){
+            return false;
+        }
+
+        const isShort = to.y > from.y;
+        const step = isShort ? 1 : -1;
+
+        const rookCell = this.getCell(from.x, isShort ? 7 : 0);
+        const rook = rookCell.cellFigure;
+        if(rook === null || rook.name !== figureName.ROOK || rook.color !== king.color || rook.isMoved){
+            return false;
+        }
+
+        if(this.isInCheck(king.color)){
+            return false;
+        }
+
+        for(let y = from.y + step; y !== rookCell.y; y += step){
+            if(this.getCell(from.x, y).cellFigure !== null){
+                return false;
+            }
+        }
+
+        const enemyColor = king.color === 'white' ? 'black' : 'white';
+        const kingPath = [from.y + step, to.y];
+        for(const y of kingPath){
+            if(this.isSquareAttacked(this.getCell(from.x, y), enemyColor)){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 
     public hasLegalMoves(color:figureColor):boolean{
         const allCells = this.cells.flat();

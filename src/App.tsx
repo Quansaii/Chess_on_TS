@@ -54,6 +54,21 @@ function App() {
     })
   }
 
+  function addPoints(figures: Figure[]){
+    let points = 0;
+    for(const figure of figures){
+      points += figure.points;
+    }
+    
+    return points;
+  }
+
+  const whitePoints = addPoints(chessBoard.lostBlackFigures);
+  const blackPoints = addPoints(chessBoard.lostWhiteFigures);
+  const diff = whitePoints - blackPoints;
+  const whiteBonus = diff > 0 ? diff : 0;
+  const blackBonus = diff < 0 ? -diff : 0;
+
   const promotionCell = chessBoard.pawnCell;
   const side = chessBoard.whoMoves;
   const isGameOver = chessBoard.gameStatus !== "playing";
@@ -89,6 +104,7 @@ function App() {
       <div className="player-row">
         <div className={`player ${!isGameOver && side === "black" ? "active" : ""}`}>Чёрные</div>
         <div className="captured-list">{lostFiguresImages(chessBoard.lostWhiteFigures)}</div>
+        {blackBonus > 0 && <span className="score">+{blackBonus}</span>}
       </div>
       
       <div className="board-container">
@@ -134,6 +150,7 @@ function App() {
       <div className="player-row">
         <div className={`player ${!isGameOver && side === "white" ? "active" : ""}`}>Белые</div>
         <div className="captured-list">{lostFiguresImages(chessBoard.lostBlackFigures)}</div>
+        {whiteBonus > 0 && <span className="score">+{whiteBonus}</span>}
       </div>
     </div>
     </>

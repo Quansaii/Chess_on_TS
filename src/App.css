@@ -154,7 +154,7 @@
 .player-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
 }
 
 .captured-list {
@@ -164,6 +164,15 @@
   padding: 2px 4px;
   border-radius: 4px;
   background-color: #f0d9b5;
+}
+
+.score {
+  margin-left: 6px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+  color: #ffffff;
+  background-color: #4a4742;
 }
 
 .captured {
